@@ -1,0 +1,39 @@
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mao.dao.LaboratoryDao">
+	 <resultMap id="LaboratoryResultMap" type="Laboratory">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="academybelong" property="academybelong" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<!--  <result column="created_at" property="created_at" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updated_at" jdbcType="TIMESTAMP" />  -->
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, name,academybelong,address,created_at,updated_at
+	</sql> 
+	
+	<insert id="addLaboratory" useGeneratedKeys="true" keyProperty="id" parameterType="Laboratory">
+		insert into laboratory(name,academybelong,address,created_at,updated_at)
+			values (#{name},#{academybelong},#{address},now(),now())
+	</insert>	
+	
+	<select id="getAllLaboratory" resultMap="LaboratoryResultMap">
+		select * from laboratory
+	</select>
+	
+	<select id="getLaboratoryByName" parameterType="java.lang.String" resultMap="LaboratoryResultMap">
+		select * from laboratory where name=#{name}
+	</select>
+	
+	<delete id="delLaboratoryById" parameterType="java.lang.Integer">
+		delete from laboratory where id=#{id}
+	</delete>
+	
+	
+				
+	
+</mapper> 

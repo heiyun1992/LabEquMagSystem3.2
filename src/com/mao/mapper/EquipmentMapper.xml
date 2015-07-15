@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mao.dao.EquipmentDao">
+	 <resultMap id="EquipmentResultMap" type="Equipment">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="laboratoryId" property="laboratoryId" jdbcType="VARCHAR" />
+		<result column="models" property="models" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="vender" property="vender" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="purchase_date" property="purchase_date" jdbcType="VARCHAR" />	
+	</resultMap>
+	
+	<resultMap id="EquipmentResultMap1" type="EquipmentUsed">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="laboratoryId" property="laboratoryId" jdbcType="VARCHAR" />
+		<result column="models" property="models" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="vender" property="vender" jdbcType="VARCHAR" />
+		<result column="purchase_date" property="purchase_date" jdbcType="VARCHAR" />
+		<result column="used_date" property="used_date" jdbcType="VARCHAR" />	
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, name,type,laboratoryId,models,price,vender,purchase_date,state,created_at,updated_at
+	</sql> 
+	
+	<select id="getAllEquipmentUsed" resultMap="EquipmentResultMap1" >
+		select name,type,laboratoryId,models,price,vender,purchase_date, 
+CONCAT(FLOOR(TIMESTAMPDIFF(MONTH,purchase_date,DATE(now()))/12),'year',(TIMESTAMPDIFF(MONTH,purchase_date,DATE(now())))%12,'mouth') as used_date from equipment 
+	</select>
+	
+	<select id="getAllEquipment" resultMap="EquipmentResultMap" >
+		SELECT * FROM equipment 
+	</select>
+	
+	<select id="getAllLoanEquipment" resultMap="EquipmentResultMap" >
+		SELECT * FROM equipment  where state='可出借'
+	</select>
+	
+	<select id="findEquipmentById" resultMap="EquipmentResultMap" parameterType="int" >
+		SELECT * FROM equipment where id=#{id}
+	</select>
+	
+	<select id="findEquipmentByType" resultMap="EquipmentResultMap" parameterType="String" >
+		SELECT * FROM equipment where type=#{type}
+	</select>
+
+	<insert id="addEquipment" useGeneratedKeys="true" keyProperty="id" parameterType="Equipment">
+		insert into equipment(name,type,laboratoryId,models,price,vender,state,purchase_date,created_at,updated_at)
+			values (#{name},#{type},#{laboratoryId},#{models},#{price},#{vender},#{state},#{purchase_date},now(),now())
+	</insert> 
+	
+	<select id="selectEquipmentByPage" resultMap="EquipmentResultMap">  
+ 		 select *  from equipment limit #{startPos},#{pageSize}   
+	</select>  
+	<!-- 取得记录的总数 -->  
+	<select id="getEquipmentCount" resultType="long">  
+ 		 SELECT COUNT(*) FROM Equipment 
+	</select> 
+	
+	<update id="updEquipment" parameterType="Equipment">	
+		update  equipment set name=#{name},type=#{type},laboratoryId=#{laboratoryId},models=#{models},price=#{price},vender=#{vender},
+				state=#{state},purchase_date=#{purchase_date} where id=#{id}
+	</update>
+	
+	
+</mapper> 

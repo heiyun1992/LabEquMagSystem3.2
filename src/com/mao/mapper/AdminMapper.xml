@@ -1,0 +1,57 @@
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mao.dao.AdminDao">
+	 <resultMap id="AdminResultMap" type="Admin">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="role" property="role" jdbcType="VARCHAR" />
+		<!--  <result column="created_at" property="created_at" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updated_at" jdbcType="TIMESTAMP" />  -->
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, name,password,role,created_at,updated_at
+	</sql> 
+	
+	<insert id="addAdmin" useGeneratedKeys="true" keyProperty="id" parameterType="com.mao.pojo.Admin">
+		insert into admin(name,password,role,created_at,updated_at)
+			values (#{name},#{password},#{role},now(),now())
+	</insert>
+	
+	
+	
+	<delete id="delAdminById" parameterType="java.lang.Integer" >
+		delete from admin where id=#{id}
+	</delete>
+	
+	<select id="serhAdminById" resultMap="AdminResultMap" parameterType="java.lang.Integer" >
+		select * from admin where id=#{id}
+	</select>
+	
+	<select id="findAdminByName" resultMap="AdminResultMap" parameterType="java.lang.String" >
+		select * from admin where name=#{name}
+	</select>
+	
+	
+	<select id="getAllAdmin" resultMap="AdminResultMap" >
+		select * from admin 
+	</select>
+	
+	<select id="loginAdmin" parameterType="Admin" resultMap="AdminResultMap" >
+		select id,name,password,role from admin t where t.name=#{name} and t.password=#{password}
+		union 
+		select id,name,password,'四级' role from teacher t where t.name = #{name} and t.password = #{password}
+	</select>
+	
+	<update id="updateAdmin" parameterType="Admin" >
+	
+		update admin set name=#{name},password=#{password},role=#{role} where id=#{id}
+	
+	</update>
+	
+	
+	
+</mapper> 

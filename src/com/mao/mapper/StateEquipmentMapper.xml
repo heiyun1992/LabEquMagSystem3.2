@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mao.dao.StateEquipmentDao">
+	<resultMap id="StateEquipmentResultMap" type="StateEquipment">
+		<id column="sid" property="id" jdbcType="INTEGER" />
+		<result column="equipment_id" property="equipment_id" jdbcType="INTEGER" />
+		<result column="admin_id" property="admin_id" jdbcType="INTEGER" /> 
+		<result column="responsible_person" property="responsible_person" jdbcType="INTEGER" />		
+		<result column="describement" property="describement" jdbcType="VARCHAR" />		
+		<association property="equipment" javaType="com.mao.pojo.Equipment"	resultMap="equipmentResultMap" />
+		<association property="admin" javaType="com.mao.pojo.Admin" resultMap="adminResultMap"/>	
+	   <association property="teacher" javaType="com.mao.pojo.Teacher" resultMap="teacherResultMap"/>		
+	</resultMap>
+	<resultMap id="equipmentResultMap" type="Equipment">
+		<id column="eid" property="id" jdbcType="INTEGER" />
+		<result column="ename" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="laboratoryId" property="laboratoryId" jdbcType="VARCHAR" />
+		<result column="models" property="models" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="vender" property="vender" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="vpurchase_date" property="purchase_date"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="adminResultMap" type="Admin">
+		<id column="aid" property="id" jdbcType="INTEGER" />
+		<result column="aname" property="name" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="role" property="role" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="teacherResultMap" type="Teacher">
+		<id column="tid" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="VARCHAR" />
+		<result column="teacher_num" property="teacher_num" jdbcType="INTEGER" />
+		<result column="phone_num" property="phone_num" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+	</resultMap>	
+	
+	<insert id="addStateEquipment" useGeneratedKeys="true" keyProperty="id" parameterType="StateEquipment" > 
+	
+	 insert into state_equipment (equipment_id,responsible_person,admin_id,describement,created_at,updated_at)
+	 	values (#{equipment_id},#{responsible_person},#{admin_id},#{describement},now(),now())
+	
+	</insert>
+	
+	<select id="getAllStateEquipment" resultMap="StateEquipmentResultMap">
+		SELECT
+			state_Equipment.id sid,		
+			admin.id aid,
+			admin.role,
+			admin.name aname,
+			equipment.id eid,
+			equipment.name ename,
+			equipment.price,
+			equipment.vender,
+			equipment.type,
+			equipment.laboratoryId,
+			teacher.name,		
+			state_Equipment.describement	
+		FROM state_Equipment,equipment,admin,teacher
+		    where state_Equipment.equipment_id=equipment.id and state_Equipment.admin_id=admin.id 
+		    	and state_Equipment.responsible_person=teacher.id    
+	</select>
+	<delete id="delStateEquipment" parameterType="Integer">
+		delete from state_Equipment  where id=#{id}
+	</delete>
+	
+	
+	<!-- <select id="getScrapedEquipmentById" resultMap="ScrapedEquipmentResultMap" parameterType="java.lang.Integer">
+		SELECT
+			scraped_Equipment.id sid,		
+			admin.id aid,
+			admin.role,
+			admin.name aname,
+			equipment.id eid,
+			equipment.name ename,
+			equipment.price,
+			equipment.vender,
+			equipment.type,
+			equipment.laboratoryId,
+			scraped_Equipment.checked_date,
+			scraped_Equipment.scrap_describe	
+		FROM scraped_Equipment,equipment,admin
+		    where scraped_Equipment.equipment_id=equipment.id and scraped_Equipment.admin_id=admin.id  and scraped_Equipment.id=#{id}    
+	</select>  -->
+	
+	
+
+
+</mapper> 

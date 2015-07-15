@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mao.dao.ScrapedEquipmentDao">
+	<resultMap id="ScrapedEquipmentResultMap" type="ScrapedEquipment">
+		<id column="sid" property="id" jdbcType="INTEGER" />
+		<result column="equipment_id" property="equipment_id" jdbcType="INTEGER" />
+		<result column="admin_id" property="admin_id" jdbcType="INTEGER" /> 
+		<result column="checked_date" property="checked_date" jdbcType="VARCHAR" />		
+		<result column="scrap_describe" property="scrap_describe" jdbcType="VARCHAR" />		
+		<association property="equipment" javaType="com.mao.pojo.Equipment"	resultMap="equipmentResultMap" />
+		<association property="admin" javaType="com.mao.pojo.Admin" resultMap="adminResultMap"/>	
+	</resultMap>
+	<resultMap id="equipmentResultMap" type="Equipment">
+		<id column="eid" property="id" jdbcType="INTEGER" />
+		<result column="ename" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="laboratoryId" property="laboratoryId" jdbcType="VARCHAR" />
+		<result column="models" property="models" jdbcType="VARCHAR" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
+		<result column="vender" property="vender" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="vpurchase_date" property="purchase_date"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="adminResultMap" type="Admin">
+		<id column="aid" property="id" jdbcType="INTEGER" />
+		<result column="aname" property="name" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="role" property="role" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="addScrapedEquipment" useGeneratedKeys="true" keyProperty="id" parameterType="ScrapedEquipment" > 
+	
+	 insert into scraped_equipment (equipment_id,checked_date,admin_id,scrap_describe,created_at,updated_at)
+	 	value (#{equipment_id},#{checked_date},#{admin_id},#{scrap_describe},now(),now())
+	
+	</insert>
+	
+	<select id="getAllScrapedEquipment" resultMap="ScrapedEquipmentResultMap">
+		SELECT
+			scraped_Equipment.id sid,		
+			admin.id aid,
+			admin.role,
+			admin.name aname,
+			equipment.id eid,
+			equipment.name ename,
+			equipment.price,
+			equipment.vender,
+			equipment.type,
+			equipment.laboratoryId,
+			scraped_Equipment.checked_date,
+			scraped_Equipment.scrap_describe	
+		FROM scraped_Equipment,equipment,admin
+		    where scraped_Equipment.equipment_id=equipment.id and scraped_Equipment.admin_id=admin.id      
+	</select>
+	
+	<select id="getScrapedEquipmentById" resultMap="ScrapedEquipmentResultMap" parameterType="java.lang.Integer">
+		SELECT
+			scraped_Equipment.id sid,		
+			admin.id aid,
+			admin.role,
+			admin.name aname,
+			equipment.id eid,
+			equipment.name ename,
+			equipment.price,
+			equipment.vender,
+			equipment.type,
+			equipment.laboratoryId,
+			scraped_Equipment.checked_date,
+			scraped_Equipment.scrap_describe	
+		FROM scraped_Equipment,equipment,admin
+		    where scraped_Equipment.equipment_id=equipment.id and scraped_Equipment.admin_id=admin.id  and scraped_Equipment.id=#{id}    
+	</select>
+	
+	
+
+
+</mapper> 
